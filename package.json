@@ -1,0 +1,24 @@
+{
+  "name": "quizmaster",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarioGeorgiev/QuizMaster.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MarioGeorgiev/QuizMaster/issues"
+  },
+  "homepage": "https://github.com/MarioGeorgiev/QuizMaster#readme",
+  "dependencies": {
+    "lit-html": "^2.6.1",
+    "page": "^1.11.6"
+  }
+}

@@ -1,31 +1,68 @@
 import * as api from './api.js'
-api.settings.host='https://parseapi.back4app.com'
+const host = 'https://parseapi.back4app.com'
+api.settings.host = host
 
 export const login = api.login
 export const register = api.register
 export const logout = api.logout
 
 
-export async function getFurniture(){
-    return await api.get(api.settings.host + '/data/catalog');
+function createPointer(name, id) {
+    return {
+        "__type": "Pointer",
+        "className": name,
+        "objectId": id
+    }
 }
-
-export async function getItemById(itemId){
-    return await api.get(api.settings.host + '/data/catalog/' + itemId)
-}
-
-export async function getMyFurniture(){
+function addOwner(object) {
     const userId = sessionStorage.getItem('userId')
-    return await api.get(api.settings.hots + `/data/catalog?where=_ownerId%3D%22${userId}%22`)
+    object.owner = createPointer('_User', userId)
 }
 
-export async function createData(data){
-    return await api.post(api.settings.host + '/data/catalog',data)
+
+// Quiz Api's
+
+export async function createQuiz(quiz) {
+    const userId = sessionStorage.getItem('userId')
+    addOwner(quiz)
+    return await api.post(host + '/classes/Quiz', quiz)
 }
 
-export async function editRecord(id,data){
-    return await api.put(api.settings.host + '/data/catalog/' + id,data)
+export async function getQuizes() {
+    return await api.get(host + '/classes/Quiz')
 }
-export async function deleteRecord(id){
-    return await api.del(api.settings.host + '/data/catalog/' + id )
+export async function getQuizById(id) {
+    const search = encodeURI(`{"objectId":"${id}"}` + '&include=owner')
+
+    return await api.get(host + '/classes/Quiz?where=' + search)
+}
+
+export async function updateQuiz(id, quiz) {
+    return await api.put(host + '/classes/Quiz/' + id, quiz)
+}
+export async function deleteQuiz(id) {
+    return await api.del(host + '/classes/Quiz/' + id)
+}
+
+// Question collection
+export async function createQuestion(quizId, question) {
+    addOwner(question);
+    question.quiz = createPointer('Quiz', quizId)
+    return await api.post(host + '/classes/Question', question)
+}
+
+export async function getQuestions(quizId) {
+    let query = JSON.stringify({ "quiz": createPointer('Quiz', quizId) })
+    query = encodeURI(query)
+
+
+    const response =  await api.get(host + '/classes/Question?where=' + query)
+    return response.results;
+}
+export async function updateQuestion(id, question) {
+    return await api.put(host + '/classes/Question' + id, question)
+}
+
+export async function deleteQuestion(id) {
+    return await api.del(host + '/classes/Question' + id)
 }
